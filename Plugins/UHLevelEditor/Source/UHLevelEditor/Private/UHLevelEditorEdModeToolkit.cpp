@@ -9,6 +9,9 @@
 
 #define LOCTEXT_NAMESPACE "FUHLevelEditorEdModeToolkit"
 
+//////////////////////////////////////////////////////////////////////////
+// FUHLevelEditorEdModeToolkit
+
 FUHLevelEditorEdModeToolkit::FUHLevelEditorEdModeToolkit()
 {
 }
@@ -55,54 +58,8 @@ void FUHLevelEditorEdModeToolkit::Init(const TSharedPtr<IToolkitHost>& InitToolk
 		}
 	};
 
-	const float Factor = 256.0f;
+	LandscapeEditorWidgets = SNew(SUHLevelEditor, SharedThis(this));
 
-	SAssignNew(ToolkitWidget, SBorder)
-		.HAlign(HAlign_Center)
-		.Padding(25)
-		.IsEnabled_Static(&Locals::IsWidgetEnabled)
-		[
-			SNew(SVerticalBox)
-			+ SVerticalBox::Slot()
-			.AutoHeight()
-			.HAlign(HAlign_Center)
-			.Padding(50)
-			[
-				SNew(STextBlock)
-				.AutoWrapText(true)
-				.Text(LOCTEXT("HelperLabel", "Select some actors and move them around using buttons below"))
-			]
-			+ SVerticalBox::Slot()
-				.HAlign(HAlign_Center)
-				.AutoHeight()
-				[
-					Locals::MakeButton(LOCTEXT("UpButtonLabel", "Up"), FVector(0, 0, Factor))
-				]
-			+ SVerticalBox::Slot()
-				.HAlign(HAlign_Center)
-				.AutoHeight()
-				[
-					SNew(SHorizontalBox)
-					+ SHorizontalBox::Slot()
-					.AutoWidth()
-					[
-						Locals::MakeButton(LOCTEXT("LeftButtonLabel", "Left"), FVector(0, -Factor, 0))
-					]
-					+ SHorizontalBox::Slot()
-						.AutoWidth()
-						[
-							Locals::MakeButton(LOCTEXT("RightButtonLabel", "Right"), FVector(0, Factor, 0))
-						]
-				]
-			+ SVerticalBox::Slot()
-				.HAlign(HAlign_Center)
-				.AutoHeight()
-				[
-					Locals::MakeButton(LOCTEXT("DownButtonLabel", "Down"), FVector(0, 0, -Factor))
-				]
-
-		];
-		
 	FModeToolkit::Init(InitToolkitHost);
 }
 
@@ -119,6 +76,62 @@ FText FUHLevelEditorEdModeToolkit::GetBaseToolkitName() const
 class FEdMode* FUHLevelEditorEdModeToolkit::GetEditorMode() const
 {
 	return GLevelEditorModeTools().GetActiveMode(FUHLevelEditorEdMode::EM_UHLevelEditorEdModeId);
+}
+
+TSharedPtr<class SWidget> FUHLevelEditorEdModeToolkit::GetInlineContent() const
+{
+	return LandscapeEditorWidgets;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// SUHLevelEditor
+
+BEGIN_SLATE_FUNCTION_BUILD_OPTIMIZATION
+void SUHLevelEditor::Construct(const FArguments& InArgs, TSharedRef<FUHLevelEditorEdModeToolkit> InParentToolkit)
+{
+	ParentToolkit = InParentToolkit;
+
+	FUHLevelEditorEdMode* EdMode = GetEditorMode();
+	if (EdMode)
+	{
+		FPropertyEditorModule& PropertyModule = FModuleManager::LoadModuleChecked<FPropertyEditorModule>("PropertyEditor");
+		FDetailsViewArgs DetailsViewArgs(false, false, false, FDetailsViewArgs::HideNameArea);
+		DetailsPanel = PropertyModule.CreateDetailView(DetailsViewArgs);
+		DetailsPanel->SetIsPropertyVisibleDelegate(FIsPropertyVisible::CreateSP(this, &SUHLevelEditor::GetIsPropertyVisible));
+		DetailsPanel->SetObject(EdMode->UISettings);
+
+		ChildSlot
+		[
+			SNew(SVerticalBox)
+			+ SVerticalBox::Slot()
+			.AutoHeight()
+			.Padding(0, 0, 0, 5)
+			[
+				SAssignNew(Error, SErrorText)
+			]
+			+ SVerticalBox::Slot()
+			.Padding(0)
+			[
+				SNew(SVerticalBox)
+				+ SVerticalBox::Slot()
+				.Padding(0)
+				[
+					DetailsPanel.ToSharedRef()
+				]
+			]
+		];
+	}
+}
+END_SLATE_FUNCTION_BUILD_OPTIMIZATION
+
+class FUHLevelEditorEdMode* SUHLevelEditor::GetEditorMode() const
+{
+	return (FUHLevelEditorEdMode*)GLevelEditorModeTools().GetActiveMode(FUHLevelEditorEdMode::EM_UHLevelEditorEdModeId);
+}
+
+bool SUHLevelEditor::GetIsPropertyVisible(const FPropertyAndParent& PropertyAndParent) const
+{
+	return true;
 }
 
 #undef LOCTEXT_NAMESPACE

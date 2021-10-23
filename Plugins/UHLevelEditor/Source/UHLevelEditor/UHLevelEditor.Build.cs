@@ -41,6 +41,7 @@ public class UHLevelEditor : ModuleRules
 				"InputCore",
 				"UnrealEd",
 				"LevelEditor",
+				"EditorStyle"
 				// ... add private dependencies that you statically link with here ...	
 			}
 			);
