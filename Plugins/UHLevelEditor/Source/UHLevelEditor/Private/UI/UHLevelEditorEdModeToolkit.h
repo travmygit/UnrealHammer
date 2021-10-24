@@ -1,4 +1,4 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
+// Copyright https://github.com/travmygit/UnrealHammer. All Rights Reserved.
 
 #pragma once
 
@@ -7,11 +7,11 @@
 #include "Widgets/SCompoundWidget.h"
 
 class FUHLevelEditorEdModeToolkit;
-class SUHLevelEditor;
+class SUHLevelEditorWidget;
 
-/**
- * Mode Toolkit for the UH Level Editor Mode
- */
+//////////////////////////////////////////////////////////////////////////
+// FUHLevelEditorEdModeToolkit
+
 class FUHLevelEditorEdModeToolkit : public FModeToolkit
 {
 public:
@@ -34,16 +34,16 @@ public:
 	//////////////////////////////////////////////////////////////////////////
 
 protected:
-	TSharedPtr<SUHLevelEditor> LandscapeEditorWidgets;
+	TSharedPtr<SUHLevelEditorWidget> LandscapeEditorWidgets;
 };
 
-/**
- * Slate widgets for the UH Level Editor Mode
- */
-class SUHLevelEditor : public SCompoundWidget
+//////////////////////////////////////////////////////////////////////////
+// SUHLevelEditor
+
+class SUHLevelEditorWidget : public SCompoundWidget
 {
 public:
-	SLATE_BEGIN_ARGS(SUHLevelEditor) {}
+	SLATE_BEGIN_ARGS(SUHLevelEditorWidget) {}
 	SLATE_END_ARGS()
 
 	void Construct(const FArguments& InArgs, TSharedRef<FUHLevelEditorEdModeToolkit> InParentToolkit);

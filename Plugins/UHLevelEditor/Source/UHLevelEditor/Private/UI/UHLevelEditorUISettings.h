@@ -1,8 +1,23 @@
+// Copyright https://github.com/travmygit/UnrealHammer. All Rights Reserved.
+
 #pragma once
 
 #include "CoreMinimal.h"
 #include "UObject/ObjectMacros.h"
 #include "UHLevelEditorUISettings.generated.h"
+
+//////////////////////////////////////////////////////////////////////////
+// EUHLevelEditorNewLandscapeMethod
+
+enum class EUHLevelEditorNewLandscapeMethod : uint8
+{
+	None,
+	NewLandscape,
+	ImportLandscape,
+};
+
+//////////////////////////////////////////////////////////////////////////
+// UUHLevelEditorUISettings
 
 UCLASS(MinimalAPI)
 class UUHLevelEditorUISettings : public UObject
@@ -15,6 +30,12 @@ public:
 
 	// EdMode that owns this.
 	class FUHLevelEditorEdMode* EdMode;
+
+	//////////////////////////////////////////////////////////////////////////
+	//~ Begin NewLandscape
+
+	// Method of 'NewLandscape' mode of EdMode.
+	EUHLevelEditorNewLandscapeMethod NewLandscapeMethod;
 
 	// The location of the new landscape.
 	UPROPERTY(Category = "New Landscape", EditAnywhere, meta = (ShowForTools = "NewLandscape", DisplayName = "Location"))
@@ -35,6 +56,9 @@ public:
 	// The number of components in the X and Y direction, determining the overall size of the landscape.
 	UPROPERTY(Category = "New Landscape", EditAnywhere, meta = (ShowForTools = "NewLandscape", DisplayName = "Number of Components"))
 	FIntPoint NewLandscape_ComponentCount;
+
+	//~ End NewLandscape
+	//////////////////////////////////////////////////////////////////////////
 
 public:
 

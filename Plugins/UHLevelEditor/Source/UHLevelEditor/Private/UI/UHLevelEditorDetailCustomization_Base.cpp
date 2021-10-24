@@ -1,12 +1,15 @@
-#include "UHLevelEditorDetailCustomization_Base.h"
+// Copyright https://github.com/travmygit/UnrealHammer. All Rights Reserved.
+
+#include "UI/UHLevelEditorDetailCustomization_Base.h"
+#include "UHLevelEditorEdMode.h"
+
 #include "EditorModeManager.h"
 #include "EditorModes.h"
 #include "DetailLayoutBuilder.h"
-#include "UHLevelEditorEdMode.h"
 
 FUHLevelEditorEdMode* FUHLevelEditorDetailCustomization_Base::GetEditorMode()
 {
-	return (FUHLevelEditorEdMode*)GLevelEditorModeTools().GetActiveMode(FUHLevelEditorEdMode::EM_UHLevelEditorEdModeId);
+	return (FUHLevelEditorEdMode*)GLevelEditorModeTools().GetActiveMode(FUHLevelEditorEdMode::EditorModeID);
 }
 
 bool FUHLevelEditorDetailCustomization_Base::IsToolActive(FName ToolName)

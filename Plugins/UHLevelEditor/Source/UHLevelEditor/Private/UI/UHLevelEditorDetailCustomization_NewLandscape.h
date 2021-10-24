@@ -1,3 +1,5 @@
+// Copyright https://github.com/travmygit/UnrealHammer. All Rights Reserved.
+
 #pragma once
 
 #include "CoreMinimal.h"
@@ -5,14 +7,14 @@
 #include "IDetailCustomization.h"
 #include "PropertyHandle.h"
 #include "UHLevelEditorEdMode.h"
-#include "UHLevelEditorDetailCustomization_Base.h"
+#include "UI/UHLevelEditorDetailCustomization_Base.h"
 
 class FUHLevelEditorEdMode;
 class IDetailLayoutBuilder;
 
-/**
- * Slate widgets customizer for the "New Landscape" tool
- */
+//////////////////////////////////////////////////////////////////////////
+// FUHLevelEditorDetailCustomization_NewLandscape
+
 class FUHLevelEditorDetailCustomization_NewLandscape : public FUHLevelEditorDetailCustomization_Base
 {
 public:
@@ -28,6 +30,6 @@ public:
 public:
 	static TSharedRef<IDetailCustomization> MakeInstance();
 
-	ECheckBoxState NewLandscapeModeIsChecked(EUHNewLandscapePreviewMode Mode) const;
-	void OnNewLandscapeModeChanged(ECheckBoxState NewCheckedState, EUHNewLandscapePreviewMode Mode);
+	ECheckBoxState NewLandscapeModeIsChecked(EUHLevelEditorNewLandscapeMethod NewLandscapeMethod) const;
+	void OnNewLandscapeModeChanged(ECheckBoxState NewCheckedState, EUHLevelEditorNewLandscapeMethod NewLandscapeMethod);
 };

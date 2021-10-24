@@ -1,4 +1,9 @@
-#include "UHLevelEditorDetails.h"
+// Copyright https://github.com/travmygit/UnrealHammer. All Rights Reserved.
+
+#include "UI/UHLevelEditorDetails.h"
+#include "UHLevelEditorEdMode.h"
+#include "UI/UHLevelEditorDetailCustomization_NewLandscape.h"
+
 #include "EditorModeManager.h"
 #include "EditorModes.h"
 #include "SlateOptMacros.h"
@@ -7,8 +12,6 @@
 #include "DetailWidgetRow.h"
 #include "Widgets/Layout/SUniformGridPanel.h"
 #include "Framework/Commands/UICommandList.h"
-#include "UHLevelEditorEdMode.h"
-#include "UHLevelEditorDetailCustomization_NewLandscape.h"
 
 #define LOCTEXT_NAMESPACE "UHLevelEditor"
 

@@ -1,19 +1,21 @@
+// Copyright https://github.com/travmygit/UnrealHammer. All Rights Reserved.
+
 #pragma once
 
 #include "CoreMinimal.h"
 #include "Templates/Casts.h"
 #include "IDetailCustomization.h"
 #include "PropertyHandle.h"
-#include "UHLevelEditorDetailCustomization_Base.h"
+#include "UI/UHLevelEditorDetailCustomization_Base.h"
 
 class FUHLevelEditorEdMode;
 class IDetailLayoutBuilder;
 class FUICommandList;
 class FUHLevelEditorDetailCustomization_NewLandscape;
 
-/**
- * Slate widgets customizer for the "New Landscape" tool
- */
+//////////////////////////////////////////////////////////////////////////
+// FUHLevelEditorDetails
+
 class FUHLevelEditorDetails : public FUHLevelEditorDetailCustomization_Base
 {
 public:

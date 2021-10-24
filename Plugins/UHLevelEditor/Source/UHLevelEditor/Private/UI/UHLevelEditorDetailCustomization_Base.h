@@ -1,3 +1,5 @@
+// Copyright https://github.com/travmygit/UnrealHammer. All Rights Reserved.
+
 #pragma once
 
 #include "CoreMinimal.h"
@@ -8,9 +10,9 @@
 class FUHLevelEditorEdMode;
 class IDetailLayoutBuilder;
 
-/**
- * Slate widgets customizers for the UH Level Editor
- */
+//////////////////////////////////////////////////////////////////////////
+// FUHLevelEditorDetailCustomization_Base
+
 class FUHLevelEditorDetailCustomization_Base : public IDetailCustomization
 {
 public:

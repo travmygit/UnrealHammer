@@ -1,8 +1,11 @@
-#include "UHLevelEditorUISettings.h"
+// Copyright https://github.com/travmygit/UnrealHammer. All Rights Reserved.
+
+#include "UI/UHLevelEditorUISettings.h"
 #include "UHLevelEditorEdMode.h"
 
 UUHLevelEditorUISettings::UUHLevelEditorUISettings()
 	: EdMode(nullptr)
+	, NewLandscapeMethod(EUHLevelEditorNewLandscapeMethod::NewLandscape)
 {
 	// NewLandscape
 	NewLandscape_Location = FVector::ZeroVector;

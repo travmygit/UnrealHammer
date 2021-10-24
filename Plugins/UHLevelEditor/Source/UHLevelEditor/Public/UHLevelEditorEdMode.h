@@ -1,19 +1,9 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
+// Copyright https://github.com/travmygit/UnrealHammer. All Rights Reserved.
 
 #pragma once
 
 #include "CoreMinimal.h"
 #include "EdMode.h"
-
-//////////////////////////////////////////////////////////////////////////
-// EUHNewLandscapePreviewMode
-
-enum class EUHNewLandscapePreviewMode : uint8
-{
-	None,
-	NewLandscape,
-	ImportLandscape,
-};
 
 //////////////////////////////////////////////////////////////////////////
 // FUHLevelEditorEdMode
@@ -22,11 +12,9 @@ class FUHLevelEditorEdMode : public FEdMode
 {
 public:
 
-	const static FEditorModeID EM_UHLevelEditorEdModeId;
+	const static FEditorModeID EditorModeID;
 
 	class UUHLevelEditorUISettings* UISettings;
-
-	EUHNewLandscapePreviewMode NewLandscapePreviewMode;
 
 public:
 

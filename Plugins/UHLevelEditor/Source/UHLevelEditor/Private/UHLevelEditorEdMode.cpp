@@ -1,79 +1,19 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
+// Copyright https://github.com/travmygit/UnrealHammer. All Rights Reserved.
 
 #include "UHLevelEditorEdMode.h"
-#include "UHLevelEditorEdModeToolkit.h"
+#include "UI/UHLevelEditorUISettings.h"
+#include "UI/UHLevelEditorEdModeToolkit.h"
+
 #include "Toolkits/ToolkitManager.h"
 #include "EditorModeManager.h"
-#include "HitProxies.h"
-#include "UHLevelEditorUISettings.h"
-
-//////////////////////////////////////////////////////////////////////////
-// EUHNewLandscapeEdge
-
-enum class EUHNewLandscapeEdge : uint8
-{
-	None,
-
-	// Edges
-	X_Negative,
-	X_Positive,
-	Y_Negative,
-	Y_Positive,
-
-	// Corners
-	X_Negative_Y_Negative,
-	X_Positive_Y_Negative,
-	X_Negative_Y_Positive,
-	X_Positive_Y_Positive,
-};
-
-//////////////////////////////////////////////////////////////////////////
-// HUHNewLandscapeGrabHandleProxy
-
-struct HUHNewLandscapeGrabHandleProxy : public HHitProxy
-{
-	DECLARE_HIT_PROXY();
-
-	EUHNewLandscapeEdge Edge;
-
-	HUHNewLandscapeGrabHandleProxy(EUHNewLandscapeEdge InEdge) :
-		HHitProxy(HPP_Wireframe),
-		Edge(InEdge)
-	{
-	}
-
-	virtual EMouseCursor::Type GetMouseCursor() override
-	{
-		switch (Edge)
-		{
-		case EUHNewLandscapeEdge::X_Negative:
-		case EUHNewLandscapeEdge::X_Positive:
-			return EMouseCursor::ResizeLeftRight;
-		case EUHNewLandscapeEdge::Y_Negative:
-		case EUHNewLandscapeEdge::Y_Positive:
-			return EMouseCursor::ResizeUpDown;
-		case EUHNewLandscapeEdge::X_Negative_Y_Negative:
-		case EUHNewLandscapeEdge::X_Positive_Y_Positive:
-			return EMouseCursor::ResizeSouthEast;
-		case EUHNewLandscapeEdge::X_Negative_Y_Positive:
-		case EUHNewLandscapeEdge::X_Positive_Y_Negative:
-			return EMouseCursor::ResizeSouthWest;
-		}
-
-		return EMouseCursor::SlashedCircle;
-	}
-};
-
-IMPLEMENT_HIT_PROXY(HUHNewLandscapeGrabHandleProxy, HHitProxy)
 
 //////////////////////////////////////////////////////////////////////////
 // FUHLevelEditorEdMode
 
-const FEditorModeID FUHLevelEditorEdMode::EM_UHLevelEditorEdModeId = TEXT("EM_UHLevelEditorEdMode");
+const FEditorModeID FUHLevelEditorEdMode::EditorModeID = TEXT("UHLevelEditorEdMode");
 
 FUHLevelEditorEdMode::FUHLevelEditorEdMode()
 	: UISettings(nullptr)
-	, NewLandscapePreviewMode(EUHNewLandscapePreviewMode::NewLandscape)
 {
 	UISettings = NewObject<UUHLevelEditorUISettings>(GetTransientPackage(), NAME_None, RF_Transactional);
 	UISettings->Init(this);
@@ -134,21 +74,15 @@ void FUHLevelEditorEdMode::Render(const FSceneView* View, FViewport* Viewport, F
 			{
 				if (X == 0)
 				{
-					PDI->SetHitProxy(new HUHNewLandscapeGrabHandleProxy(EUHNewLandscapeEdge::X_Negative_Y_Negative));
 					PDI->DrawLine(Transform.TransformPosition(FVector(X, 0, 0)), Transform.TransformPosition(FVector(X, CornerSize * ComponentSize, 0)), CornerColour, SDPG_Foreground);
-					PDI->SetHitProxy(new HUHNewLandscapeGrabHandleProxy(EUHNewLandscapeEdge::X_Negative));
 					PDI->DrawLine(Transform.TransformPosition(FVector(X, CornerSize * ComponentSize, 0)), Transform.TransformPosition(FVector(X, (ComponentCountY - CornerSize) * ComponentSize, 0)), EdgeColour, SDPG_Foreground);
-					PDI->SetHitProxy(new HUHNewLandscapeGrabHandleProxy(EUHNewLandscapeEdge::X_Negative_Y_Positive));
 					PDI->DrawLine(Transform.TransformPosition(FVector(X, (ComponentCountY - CornerSize) * ComponentSize, 0)), Transform.TransformPosition(FVector(X, ComponentCountY * ComponentSize, 0)), CornerColour, SDPG_Foreground);
 					PDI->SetHitProxy(NULL);
 				}
 				else if (X == ComponentCountX * QuadsPerComponent)
 				{
-					PDI->SetHitProxy(new HUHNewLandscapeGrabHandleProxy(EUHNewLandscapeEdge::X_Positive_Y_Negative));
 					PDI->DrawLine(Transform.TransformPosition(FVector(X, 0, 0)), Transform.TransformPosition(FVector(X, CornerSize * ComponentSize, 0)), CornerColour, SDPG_Foreground);
-					PDI->SetHitProxy(new HUHNewLandscapeGrabHandleProxy(EUHNewLandscapeEdge::X_Positive));
 					PDI->DrawLine(Transform.TransformPosition(FVector(X, CornerSize * ComponentSize, 0)), Transform.TransformPosition(FVector(X, (ComponentCountY - CornerSize) * ComponentSize, 0)), EdgeColour, SDPG_Foreground);
-					PDI->SetHitProxy(new HUHNewLandscapeGrabHandleProxy(EUHNewLandscapeEdge::X_Positive_Y_Positive));
 					PDI->DrawLine(Transform.TransformPosition(FVector(X, (ComponentCountY - CornerSize) * ComponentSize, 0)), Transform.TransformPosition(FVector(X, ComponentCountY * ComponentSize, 0)), CornerColour, SDPG_Foreground);
 					PDI->SetHitProxy(NULL);
 				}
@@ -176,21 +110,15 @@ void FUHLevelEditorEdMode::Render(const FSceneView* View, FViewport* Viewport, F
 			{
 				if (Y == 0)
 				{
-					PDI->SetHitProxy(new HUHNewLandscapeGrabHandleProxy(EUHNewLandscapeEdge::X_Negative_Y_Negative));
 					PDI->DrawLine(Transform.TransformPosition(FVector(0, Y, 0)), Transform.TransformPosition(FVector(CornerSize * ComponentSize, Y, 0)), CornerColour, SDPG_Foreground);
-					PDI->SetHitProxy(new HUHNewLandscapeGrabHandleProxy(EUHNewLandscapeEdge::Y_Negative));
 					PDI->DrawLine(Transform.TransformPosition(FVector(CornerSize * ComponentSize, Y, 0)), Transform.TransformPosition(FVector((ComponentCountX - CornerSize) * ComponentSize, Y, 0)), EdgeColour, SDPG_Foreground);
-					PDI->SetHitProxy(new HUHNewLandscapeGrabHandleProxy(EUHNewLandscapeEdge::X_Positive_Y_Negative));
 					PDI->DrawLine(Transform.TransformPosition(FVector((ComponentCountX - CornerSize) * ComponentSize, Y, 0)), Transform.TransformPosition(FVector(ComponentCountX * ComponentSize, Y, 0)), CornerColour, SDPG_Foreground);
 					PDI->SetHitProxy(NULL);
 				}
 				else if (Y == ComponentCountY * QuadsPerComponent)
 				{
-					PDI->SetHitProxy(new HUHNewLandscapeGrabHandleProxy(EUHNewLandscapeEdge::X_Negative_Y_Positive));
 					PDI->DrawLine(Transform.TransformPosition(FVector(0, Y, 0)), Transform.TransformPosition(FVector(CornerSize * ComponentSize, Y, 0)), CornerColour, SDPG_Foreground);
-					PDI->SetHitProxy(new HUHNewLandscapeGrabHandleProxy(EUHNewLandscapeEdge::Y_Positive));
 					PDI->DrawLine(Transform.TransformPosition(FVector(CornerSize * ComponentSize, Y, 0)), Transform.TransformPosition(FVector((ComponentCountX - CornerSize) * ComponentSize, Y, 0)), EdgeColour, SDPG_Foreground);
-					PDI->SetHitProxy(new HUHNewLandscapeGrabHandleProxy(EUHNewLandscapeEdge::X_Positive_Y_Positive));
 					PDI->DrawLine(Transform.TransformPosition(FVector((ComponentCountX - CornerSize) * ComponentSize, Y, 0)), Transform.TransformPosition(FVector(ComponentCountX * ComponentSize, Y, 0)), CornerColour, SDPG_Foreground);
 					PDI->SetHitProxy(NULL);
 				}
@@ -225,6 +153,3 @@ void FUHLevelEditorEdMode::AddReferencedObjects(FReferenceCollector& Collector)
 
 	Collector.AddReferencedObject(UISettings);
 }
-
-
-

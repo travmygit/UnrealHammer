@@ -1,4 +1,8 @@
-#include "UHLevelEditorDetailCustomization_NewLandscape.h"
+// Copyright https://github.com/travmygit/UnrealHammer. All Rights Reserved.
+
+#include "UI/UHLevelEditorDetailCustomization_NewLandscape.h"
+#include "UHLevelEditorEdMode.h"
+
 #include "EditorModeManager.h"
 #include "EditorModes.h"
 #include "SlateOptMacros.h"
@@ -6,7 +10,6 @@
 #include "DetailCategoryBuilder.h"
 #include "DetailWidgetRow.h"
 #include "Widgets/Layout/SUniformGridPanel.h"
-#include "UHLevelEditorEdMode.h"
 
 #define LOCTEXT_NAMESPACE "UHLevelEditor.NewLandscape"
 
@@ -35,8 +38,8 @@ void FUHLevelEditorDetailCustomization_NewLandscape::CustomizeDetails(IDetailLay
 		[
 			SNew(SCheckBox)
 			.Style(FEditorStyle::Get(), "RadioButton")
-			.IsChecked(this, &FUHLevelEditorDetailCustomization_NewLandscape::NewLandscapeModeIsChecked, EUHNewLandscapePreviewMode::NewLandscape)
-			.OnCheckStateChanged(this, &FUHLevelEditorDetailCustomization_NewLandscape::OnNewLandscapeModeChanged, EUHNewLandscapePreviewMode::NewLandscape)
+			.IsChecked(this, &FUHLevelEditorDetailCustomization_NewLandscape::NewLandscapeModeIsChecked, EUHLevelEditorNewLandscapeMethod::NewLandscape)
+			.OnCheckStateChanged(this, &FUHLevelEditorDetailCustomization_NewLandscape::OnNewLandscapeModeChanged, EUHLevelEditorNewLandscapeMethod::NewLandscape)
 			[
 				SNew(STextBlock)
 				.Text(LOCTEXT("NewLandscape", "Create New"))
@@ -46,8 +49,8 @@ void FUHLevelEditorDetailCustomization_NewLandscape::CustomizeDetails(IDetailLay
 		[
 			SNew(SCheckBox)
 			.Style(FEditorStyle::Get(), "RadioButton")
-			.IsChecked(this, &FUHLevelEditorDetailCustomization_NewLandscape::NewLandscapeModeIsChecked, EUHNewLandscapePreviewMode::ImportLandscape)
-			.OnCheckStateChanged(this, &FUHLevelEditorDetailCustomization_NewLandscape::OnNewLandscapeModeChanged, EUHNewLandscapePreviewMode::ImportLandscape)
+			.IsChecked(this, &FUHLevelEditorDetailCustomization_NewLandscape::NewLandscapeModeIsChecked, EUHLevelEditorNewLandscapeMethod::ImportLandscape)
+			.OnCheckStateChanged(this, &FUHLevelEditorDetailCustomization_NewLandscape::OnNewLandscapeModeChanged, EUHLevelEditorNewLandscapeMethod::ImportLandscape)
 			[
 				SNew(STextBlock)
 				.Text(LOCTEXT("ImportLandscape", "Import from File"))
@@ -64,24 +67,26 @@ TSharedRef<IDetailCustomization> FUHLevelEditorDetailCustomization_NewLandscape:
 	return MakeShareable(new FUHLevelEditorDetailCustomization_NewLandscape);
 }
 
-ECheckBoxState FUHLevelEditorDetailCustomization_NewLandscape::NewLandscapeModeIsChecked(EUHNewLandscapePreviewMode Mode) const
+ECheckBoxState FUHLevelEditorDetailCustomization_NewLandscape::NewLandscapeModeIsChecked(EUHLevelEditorNewLandscapeMethod NewLandscapeMethod) const
 {
+	checkSlow(NewLandscapeMethod != EUHLevelEditorNewLandscapeMethod::None);
 	FUHLevelEditorEdMode* EdMode = GetEditorMode();
 	if (EdMode)
 	{
-		return (EdMode->NewLandscapePreviewMode == Mode) ? ECheckBoxState::Checked : ECheckBoxState::Unchecked;
+		return (EdMode->UISettings->NewLandscapeMethod == NewLandscapeMethod) ? ECheckBoxState::Checked : ECheckBoxState::Unchecked;
 	}
 	return ECheckBoxState::Unchecked;
 }
 
-void FUHLevelEditorDetailCustomization_NewLandscape::OnNewLandscapeModeChanged(ECheckBoxState NewCheckedState, EUHNewLandscapePreviewMode Mode)
+void FUHLevelEditorDetailCustomization_NewLandscape::OnNewLandscapeModeChanged(ECheckBoxState NewCheckedState, EUHLevelEditorNewLandscapeMethod NewLandscapeMethod)
 {
+	checkSlow(NewLandscapeMethod != EUHLevelEditorNewLandscapeMethod::None);
 	if (NewCheckedState == ECheckBoxState::Checked)
 	{
 		FUHLevelEditorEdMode* EdMode = GetEditorMode();
 		if (EdMode)
 		{
-			EdMode->NewLandscapePreviewMode = Mode;
+			EdMode->UISettings->NewLandscapeMethod = NewLandscapeMethod;
 		}
 	}
 }

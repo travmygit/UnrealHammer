@@ -1,4 +1,4 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
+// Copyright https://github.com/travmygit/UnrealHammer. All Rights Reserved.
 
 #pragma once
 
@@ -9,7 +9,10 @@ class FUHLevelEditorModule : public IModuleInterface
 {
 public:
 
-	/** IModuleInterface implementation */
+	//////////////////////////////////////////////////////////////////////////
+	//~ Begin IModuleInterface interface
 	virtual void StartupModule() override;
 	virtual void ShutdownModule() override;
+	//~ End IModuleInterface interface
+	//////////////////////////////////////////////////////////////////////////
 };
