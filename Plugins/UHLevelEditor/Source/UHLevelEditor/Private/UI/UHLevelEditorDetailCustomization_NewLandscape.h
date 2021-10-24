@@ -7,6 +7,7 @@
 #include "IDetailCustomization.h"
 #include "PropertyHandle.h"
 #include "UHLevelEditorEdMode.h"
+#include "UI/UHLevelEditorUISettings.h"
 #include "UI/UHLevelEditorDetailCustomization_Base.h"
 
 class FUHLevelEditorEdMode;
@@ -30,6 +31,10 @@ public:
 public:
 	static TSharedRef<IDetailCustomization> MakeInstance();
 
+	static EVisibility GetVisibilityOnlyInNewLandscapeMode(EUHLevelEditorNewLandscapeMethod NewLandscapeMethod);
 	ECheckBoxState NewLandscapeModeIsChecked(EUHLevelEditorNewLandscapeMethod NewLandscapeMethod) const;
 	void OnNewLandscapeModeChanged(ECheckBoxState NewCheckedState, EUHLevelEditorNewLandscapeMethod NewLandscapeMethod);
+
+	FReply OnCreateButtonClicked();
+	bool GetImportButtonIsEnabled() const;
 };

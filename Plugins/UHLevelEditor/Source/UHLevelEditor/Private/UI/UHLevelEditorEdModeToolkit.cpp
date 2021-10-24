@@ -47,7 +47,7 @@ TSharedPtr<class SWidget> FUHLevelEditorEdModeToolkit::GetInlineContent() const
 }
 
 //////////////////////////////////////////////////////////////////////////
-// SUHLevelEditor
+// SUHLevelEditorWidget
 
 BEGIN_SLATE_FUNCTION_BUILD_OPTIMIZATION
 void SUHLevelEditorWidget::Construct(const FArguments& InArgs, TSharedRef<FUHLevelEditorEdModeToolkit> InParentToolkit)

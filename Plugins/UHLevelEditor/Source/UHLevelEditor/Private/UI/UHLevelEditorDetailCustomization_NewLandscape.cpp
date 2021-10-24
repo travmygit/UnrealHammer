@@ -58,13 +58,46 @@ void FUHLevelEditorDetailCustomization_NewLandscape::CustomizeDetails(IDetailLay
 		]
 	];
 
-
+	NewLandscapeCategory.AddCustomRow(FText::GetEmpty())
+	[
+		SNew(SHorizontalBox)
+		+ SHorizontalBox::Slot()
+		.FillWidth(1)
+		+ SHorizontalBox::Slot()
+		.AutoWidth()
+		[
+			SNew(SButton)
+			.Visibility_Static(&GetVisibilityOnlyInNewLandscapeMode, EUHLevelEditorNewLandscapeMethod::NewLandscape)
+			.Text(LOCTEXT("Create", "Create"))
+			.OnClicked(this, &FUHLevelEditorDetailCustomization_NewLandscape::OnCreateButtonClicked)
+		]
+		+ SHorizontalBox::Slot()
+		.AutoWidth()
+		[
+			SNew(SButton)
+			.Visibility_Static(&GetVisibilityOnlyInNewLandscapeMode, EUHLevelEditorNewLandscapeMethod::ImportLandscape)
+			.Text(LOCTEXT("Import", "Import"))
+			.OnClicked(this, &FUHLevelEditorDetailCustomization_NewLandscape::OnCreateButtonClicked)
+			.IsEnabled(this, &FUHLevelEditorDetailCustomization_NewLandscape::GetImportButtonIsEnabled)
+		]
+	];
 }
 END_SLATE_FUNCTION_BUILD_OPTIMIZATION
 
 TSharedRef<IDetailCustomization> FUHLevelEditorDetailCustomization_NewLandscape::MakeInstance()
 {
 	return MakeShareable(new FUHLevelEditorDetailCustomization_NewLandscape);
+}
+
+EVisibility FUHLevelEditorDetailCustomization_NewLandscape::GetVisibilityOnlyInNewLandscapeMode(EUHLevelEditorNewLandscapeMethod NewLandscapeMethod)
+{
+	checkSlow(NewLandscapeMethod != EUHLevelEditorNewLandscapeMethod::None);
+	FUHLevelEditorEdMode* EdMode = GetEditorMode();
+	if (EdMode)
+	{
+		return (EdMode->UISettings->NewLandscapeMethod == NewLandscapeMethod) ? EVisibility::Visible : EVisibility::Collapsed;
+	}
+	return EVisibility::Collapsed;
 }
 
 ECheckBoxState FUHLevelEditorDetailCustomization_NewLandscape::NewLandscapeModeIsChecked(EUHLevelEditorNewLandscapeMethod NewLandscapeMethod) const
@@ -89,6 +122,26 @@ void FUHLevelEditorDetailCustomization_NewLandscape::OnNewLandscapeModeChanged(E
 			EdMode->UISettings->NewLandscapeMethod = NewLandscapeMethod;
 		}
 	}
+}
+
+FReply FUHLevelEditorDetailCustomization_NewLandscape::OnCreateButtonClicked()
+{
+	FUHLevelEditorEdMode* EdMode = GetEditorMode();
+	if (EdMode)
+	{
+		
+	}
+	return FReply::Handled();
+}
+
+bool FUHLevelEditorDetailCustomization_NewLandscape::GetImportButtonIsEnabled() const
+{
+	FUHLevelEditorEdMode* EdMode = GetEditorMode();
+	if (EdMode)
+	{
+
+	}
+	return false;
 }
 
 #undef LOCTEXT_NAMESPACE
