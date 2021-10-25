@@ -41,4 +41,11 @@ public:
 	FText GetTotalComponentCount() const;
 	FText GetResolutionX() const;
 	FText GetResolutionY() const;
+
+	static TSharedRef<SWidget> GetComponentSizeMenu(TSharedRef<IPropertyHandle> PropertyHandle);
+	static void OnComponentSizeChanged(TSharedRef<IPropertyHandle> PropertyHandle, int32 NewSize);
+	static FText GetComponentSize(TSharedRef<IPropertyHandle> PropertyHandle);
+	static const int32 ComponentSizes[6];
+
+	static void SetScale(float NewValue, ETextCommit::Type, TSharedRef<IPropertyHandle> PropertyHandle);
 };
