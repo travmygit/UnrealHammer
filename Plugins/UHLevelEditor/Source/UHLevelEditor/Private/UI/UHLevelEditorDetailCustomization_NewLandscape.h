@@ -37,4 +37,8 @@ public:
 
 	FReply OnCreateButtonClicked();
 	bool GetImportButtonIsEnabled() const;
+
+	FText GetTotalComponentCount() const;
+	FText GetResolutionX() const;
+	FText GetResolutionY() const;
 };

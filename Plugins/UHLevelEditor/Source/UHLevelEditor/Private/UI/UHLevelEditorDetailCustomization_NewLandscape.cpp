@@ -10,6 +10,7 @@
 #include "DetailCategoryBuilder.h"
 #include "DetailWidgetRow.h"
 #include "Widgets/Layout/SUniformGridPanel.h"
+#include "Widgets/Input/SNumericEntryBox.h"
 
 #define LOCTEXT_NAMESPACE "UHLevelEditor.NewLandscape"
 
@@ -55,6 +56,127 @@ void FUHLevelEditorDetailCustomization_NewLandscape::CustomizeDetails(IDetailLay
 				SNew(STextBlock)
 				.Text(LOCTEXT("ImportLandscape", "Import from File"))
 			]
+		]
+	];
+
+	TSharedRef<IPropertyHandle> PropertyHandle_ComponentCount = DetailBuilder.GetProperty(GET_MEMBER_NAME_CHECKED(UUHLevelEditorUISettings, NewLandscape_ComponentCount));
+	TSharedRef<IPropertyHandle> PropertyHandle_ComponentCount_X = PropertyHandle_ComponentCount->GetChildHandle("X").ToSharedRef();
+	TSharedRef<IPropertyHandle> PropertyHandle_ComponentCount_Y = PropertyHandle_ComponentCount->GetChildHandle("Y").ToSharedRef();
+	NewLandscapeCategory.AddProperty(PropertyHandle_ComponentCount)
+	.CustomWidget()
+	.NameContent()
+	[
+		PropertyHandle_ComponentCount->CreatePropertyNameWidget()
+	]
+	.ValueContent()
+	[
+		SNew(SHorizontalBox)
+		+ SHorizontalBox::Slot()
+		.FillWidth(1)
+		[
+			SNew(SNumericEntryBox<int32>)
+			.LabelVAlign(VAlign_Center)
+			.Font(DetailBuilder.GetDetailFont())
+			.MinValue(1)
+			.MaxValue(32)
+			.MinSliderValue(1)
+			.MaxSliderValue(32)
+			.AllowSpin(true)
+			.UndeterminedString(NSLOCTEXT("PropertyEditor", "MultipleValues", "Multiple Values"))
+			.Value_Static(&FUHLevelEditorDetailCustomization_Base::OnGetValue<int32>, PropertyHandle_ComponentCount_X)
+			.OnValueChanged_Static(&FUHLevelEditorDetailCustomization_Base::OnValueChanged<int32>, PropertyHandle_ComponentCount_X)
+			.OnValueCommitted_Static(&FUHLevelEditorDetailCustomization_Base::OnValueCommitted<int32>, PropertyHandle_ComponentCount_X)
+		]
+		+ SHorizontalBox::Slot()
+		.AutoWidth()
+		.Padding(2, 0)
+		.VAlign(VAlign_Center)
+		[
+			SNew(STextBlock)
+			.Font(DetailBuilder.GetDetailFont())
+			.Text(FText::FromString(FString().AppendChar(0xD7))) // Multiply sign
+		]
+		+ SHorizontalBox::Slot()
+		.FillWidth(1)
+		[
+			SNew(SNumericEntryBox<int32>)
+			.LabelVAlign(VAlign_Center)
+			.Font(DetailBuilder.GetDetailFont())
+			.MinValue(1)
+			.MaxValue(32)
+			.MinSliderValue(1)
+			.MaxSliderValue(32)
+			.AllowSpin(true)
+			.UndeterminedString(NSLOCTEXT("PropertyEditor", "MultipleValues", "Multiple Values"))
+			.Value_Static(&FUHLevelEditorDetailCustomization_Base::OnGetValue<int32>, PropertyHandle_ComponentCount_Y)
+			.OnValueChanged_Static(&FUHLevelEditorDetailCustomization_Base::OnValueChanged<int32>, PropertyHandle_ComponentCount_Y)
+			.OnValueCommitted_Static(&FUHLevelEditorDetailCustomization_Base::OnValueCommitted<int32>, PropertyHandle_ComponentCount_Y)
+		]
+	];
+
+	NewLandscapeCategory.AddCustomRow(FText::GetEmpty())
+	.NameContent()
+	[
+		SNew(SBox)
+		.VAlign(VAlign_Center)
+		.Padding(FMargin(2))
+		[
+			SNew(STextBlock)
+			.Font(DetailBuilder.GetDetailFont())
+			.Text(LOCTEXT("Resolution", "Resolution"))
+		]
+	]
+	.ValueContent()
+	[
+		SNew(SHorizontalBox)
+		+ SHorizontalBox::Slot()
+		.FillWidth(1)
+		[
+			SNew(SEditableTextBox)
+			.IsReadOnly(true)
+			.Font(DetailBuilder.GetDetailFont())
+			.Text(this, &FUHLevelEditorDetailCustomization_NewLandscape::GetResolutionX)
+		]
+		+ SHorizontalBox::Slot()
+		.AutoWidth()
+		.Padding(2, 0)
+		.VAlign(VAlign_Center)
+		[
+			SNew(STextBlock)
+			.Font(DetailBuilder.GetDetailFont())
+			.Text(FText::FromString(FString().AppendChar(0xD7))) // Multiply sign
+		]
+		+ SHorizontalBox::Slot()
+		.FillWidth(1)
+		[
+			SNew(SEditableTextBox)
+			.IsReadOnly(true)
+			.Font(DetailBuilder.GetDetailFont())
+			.Text(this, &FUHLevelEditorDetailCustomization_NewLandscape::GetResolutionY)
+		]
+	];
+
+	NewLandscapeCategory.AddCustomRow(FText::GetEmpty())
+	.NameContent()
+	[
+		SNew(SBox)
+		.VAlign(VAlign_Center)
+		.Padding(FMargin(2))
+		[
+			SNew(STextBlock)
+			.Font(DetailBuilder.GetDetailFont())
+			.Text(LOCTEXT("TotalComponents", "Total Components"))
+		]
+	]
+	.ValueContent()
+	[
+		SNew(SBox)
+		.Padding(FMargin(0, 0, 12, 0)) // Line up with the other properties due to having no reset to default button
+		[
+			SNew(SEditableTextBox)
+			.IsReadOnly(true)
+			.Font(DetailBuilder.GetDetailFont())
+			.Text(this, &FUHLevelEditorDetailCustomization_NewLandscape::GetTotalComponentCount)
 		]
 	];
 
@@ -142,6 +264,36 @@ bool FUHLevelEditorDetailCustomization_NewLandscape::GetImportButtonIsEnabled() 
 
 	}
 	return false;
+}
+
+FText FUHLevelEditorDetailCustomization_NewLandscape::GetTotalComponentCount() const
+{
+	FUHLevelEditorEdMode* EdMode = GetEditorMode();
+	if (EdMode)
+	{
+		return FText::AsNumber(EdMode->UISettings->NewLandscape_ComponentCount.X * EdMode->UISettings->NewLandscape_ComponentCount.Y);
+	}
+	return FText::GetEmpty();
+}
+
+FText FUHLevelEditorDetailCustomization_NewLandscape::GetResolutionX() const
+{
+	FUHLevelEditorEdMode* EdMode = GetEditorMode();
+	if (EdMode)
+	{
+		return FText::AsNumber(EdMode->UISettings->NewLandscape_ComponentCount.X * EdMode->UISettings->NewLandscape_ComponentSize + 1);
+	}
+	return FText::GetEmpty();
+}
+
+FText FUHLevelEditorDetailCustomization_NewLandscape::GetResolutionY() const
+{
+	FUHLevelEditorEdMode* EdMode = GetEditorMode();
+	if (EdMode)
+	{
+		return FText::AsNumber(EdMode->UISettings->NewLandscape_ComponentCount.Y * EdMode->UISettings->NewLandscape_ComponentSize + 1);
+	}
+	return FText::GetEmpty();
 }
 
 #undef LOCTEXT_NAMESPACE
