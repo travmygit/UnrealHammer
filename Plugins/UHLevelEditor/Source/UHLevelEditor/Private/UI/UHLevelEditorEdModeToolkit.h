@@ -33,8 +33,24 @@ public:
 	//~ End IToolkit interface
 	//////////////////////////////////////////////////////////////////////////
 
+	//////////////////////////////////////////////////////////////////////////
+	//~ Begin FModeToolkit interface
+	virtual void GetToolPaletteNames(TArray<FName>& InPaletteName) const override;
+	virtual FText GetToolPaletteDisplayName(FName PaletteName) const override;
+	virtual void BuildToolPalette(FName PaletteName, class FToolBarBuilder& ToolbarBuilder) override;
+	virtual void OnToolPaletteChanged(FName PaletteName) override;
+	//~ End FModeToolkit interface
+	//////////////////////////////////////////////////////////////////////////
+
 protected:
+	void OnToolModeChanged(FName ModeName);
+	bool IsToolModeEnabled(FName ModeName) const;
+	bool IsToolModeActive(FName ModeName) const;
+
+private:
 	TSharedPtr<SUHLevelEditorWidget> LandscapeEditorWidgets;
+
+	static const TArray<FName> PaletteNames;
 };
 
 //////////////////////////////////////////////////////////////////////////
@@ -51,6 +67,8 @@ public:
 protected:
 	class FUHLevelEditorEdMode* GetEditorMode() const;
 	bool GetIsPropertyVisible(const FPropertyAndParent& PropertyAndParent) const;
+	bool GetLevelEditorIsEnabled() const;
+	FText GetErrorText() const;
 
 	TSharedPtr<SErrorText> Error;
 	TSharedPtr<IDetailsView> DetailsPanel;

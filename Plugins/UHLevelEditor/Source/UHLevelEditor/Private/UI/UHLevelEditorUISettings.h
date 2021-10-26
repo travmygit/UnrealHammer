@@ -17,6 +17,19 @@ enum class EUHLevelEditorNewLandscapeMethod : uint8
 };
 
 //////////////////////////////////////////////////////////////////////////
+// EUHLevelEditorEditingState
+
+enum class EUHLevelEditorEditingState : uint8
+{
+	Unknown,
+	Enabled,
+	BadFeatureLevel,
+	PIEWorld,
+	SIEWorld,
+	NoLandscape,
+};
+
+//////////////////////////////////////////////////////////////////////////
 // UUHLevelEditorUISettings
 
 UCLASS(MinimalAPI)

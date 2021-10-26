@@ -24,6 +24,16 @@ public:
 	TSharedPtr<FUICommandInfo> PaintMode;
 
 	TSharedPtr<FUICommandInfo> NewLandscapeTool;
+	TSharedPtr<FUICommandInfo> ResizeLandscapeTool;
+	TSharedPtr<FUICommandInfo> SelectComponentTool;
+	TSharedPtr<FUICommandInfo> AddComponentTool;
+	TSharedPtr<FUICommandInfo> DeleteComponentTool;
+	TSharedPtr<FUICommandInfo> MoveComponentTool;
+
+	TSharedPtr<FUICommandInfo> SculptTool;
+	TSharedPtr<FUICommandInfo> RampTool;
+
+	TSharedPtr<FUICommandInfo> PaintTool;
 
 	TMap<FName, TSharedPtr<FUICommandInfo>> NameToCommandMap;
 	

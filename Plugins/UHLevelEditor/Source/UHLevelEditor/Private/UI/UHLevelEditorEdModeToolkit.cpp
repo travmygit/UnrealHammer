@@ -13,6 +13,13 @@
 
 #define LOCTEXT_NAMESPACE "FUHLevelEditorEdModeToolkit"
 
+namespace UHLevelEditorEdModeToolkit
+{
+	static const FName Manage(TEXT("ToolMode_Manage"));
+	static const FName Sculpt(TEXT("ToolMode_Sculpt"));
+	static const FName Paint(TEXT("ToolMode_Paint"));
+}
+
 //////////////////////////////////////////////////////////////////////////
 // FUHLevelEditorEdModeToolkit
 
@@ -47,6 +54,114 @@ TSharedPtr<class SWidget> FUHLevelEditorEdModeToolkit::GetInlineContent() const
 	return LandscapeEditorWidgets;
 }
 
+const TArray<FName> FUHLevelEditorEdModeToolkit::PaletteNames = { UHLevelEditorEdModeToolkit::Manage, UHLevelEditorEdModeToolkit::Sculpt, UHLevelEditorEdModeToolkit::Paint };
+
+void FUHLevelEditorEdModeToolkit::GetToolPaletteNames(TArray<FName>& InPaletteName) const
+{
+	InPaletteName = PaletteNames;
+}
+
+FText FUHLevelEditorEdModeToolkit::GetToolPaletteDisplayName(FName PaletteName) const
+{
+	if (PaletteName == UHLevelEditorEdModeToolkit::Manage)
+	{
+		return LOCTEXT("Mode.Manage", "Manage");
+	}
+	else if (PaletteName == UHLevelEditorEdModeToolkit::Sculpt)
+	{
+		return LOCTEXT("Mode.Sculpt", "Sculpt");
+	}
+	else if (PaletteName == UHLevelEditorEdModeToolkit::Paint)
+	{
+		return LOCTEXT("Mode.Paint", "Paint");
+	}
+	return FText::GetEmpty();
+}
+
+void FUHLevelEditorEdModeToolkit::BuildToolPalette(FName PaletteName, class FToolBarBuilder& ToolbarBuilder)
+{
+	const FUHLevelEditorEdMode* EdMode = (FUHLevelEditorEdMode*)GetEditorMode();
+	if (EdMode)
+	{
+		auto UICommands = FUHLevelEditorUICommands::Get();
+		if (PaletteName == UHLevelEditorEdModeToolkit::Manage)
+		{
+			ToolbarBuilder.BeginSection(UHLevelEditorEdModeToolkit::Manage);
+			ToolbarBuilder.AddToolBarButton(UICommands.NewLandscapeTool);
+			ToolbarBuilder.AddToolBarButton(UICommands.ResizeLandscapeTool);
+			ToolbarBuilder.AddSeparator();
+			ToolbarBuilder.AddToolBarButton(UICommands.SelectComponentTool);
+			ToolbarBuilder.AddToolBarButton(UICommands.AddComponentTool);
+			ToolbarBuilder.AddToolBarButton(UICommands.DeleteComponentTool);
+			ToolbarBuilder.AddToolBarButton(UICommands.MoveComponentTool);
+			ToolbarBuilder.EndSection();
+		}
+		else if (PaletteName == UHLevelEditorEdModeToolkit::Sculpt)
+		{
+			ToolbarBuilder.BeginSection(UHLevelEditorEdModeToolkit::Sculpt);
+			ToolbarBuilder.AddToolBarButton(UICommands.SculptTool);
+			ToolbarBuilder.AddToolBarButton(UICommands.RampTool);
+			ToolbarBuilder.EndSection();
+		}
+		else if (PaletteName == UHLevelEditorEdModeToolkit::Paint)
+		{
+			ToolbarBuilder.BeginSection(UHLevelEditorEdModeToolkit::Paint);
+			ToolbarBuilder.AddToolBarButton(UICommands.PaintTool);
+			ToolbarBuilder.EndSection();
+		}
+	}
+}
+
+void FUHLevelEditorEdModeToolkit::OnToolPaletteChanged(FName PaletteName)
+{
+	if (PaletteName == UHLevelEditorEdModeToolkit::Manage && !IsToolModeActive(UHLevelEditorEdModeToolkit::Manage))
+	{
+		OnToolModeChanged(UHLevelEditorEdModeToolkit::Manage);
+	}
+	else if (PaletteName == UHLevelEditorEdModeToolkit::Sculpt && !IsToolModeActive(UHLevelEditorEdModeToolkit::Sculpt))
+	{
+		OnToolModeChanged(UHLevelEditorEdModeToolkit::Sculpt);
+	}
+	else if (PaletteName == UHLevelEditorEdModeToolkit::Paint && !IsToolModeActive(UHLevelEditorEdModeToolkit::Paint))
+	{
+		OnToolModeChanged(UHLevelEditorEdModeToolkit::Paint);
+	}
+}
+
+void FUHLevelEditorEdModeToolkit::OnToolModeChanged(FName ModeName)
+{
+	FUHLevelEditorEdMode* EdMode = (FUHLevelEditorEdMode*)GetEditorMode();
+	if (EdMode)
+	{
+		//EdMode->SetCurrentToolMode(ModeName);
+	}
+}
+
+bool FUHLevelEditorEdModeToolkit::IsToolModeEnabled(FName ModeName) const
+{
+	const FUHLevelEditorEdMode* EdMode = (FUHLevelEditorEdMode*)GetEditorMode();
+	if (EdMode)
+	{
+		// Manage is the only mode enabled if we have no landscape
+		if (ModeName == UHLevelEditorEdModeToolkit::Manage)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool FUHLevelEditorEdModeToolkit::IsToolModeActive(FName ModeName) const
+{
+	const FUHLevelEditorEdMode* EdMode = (FUHLevelEditorEdMode*)GetEditorMode();
+	if (EdMode)
+	{
+		//return EdMode->CurrentToolMode->ToolModeName == ModeName;
+		return true;
+	}
+	return false;
+}
+
 //////////////////////////////////////////////////////////////////////////
 // SUHLevelEditorWidget
 
@@ -54,14 +169,6 @@ BEGIN_SLATE_FUNCTION_BUILD_OPTIMIZATION
 void SUHLevelEditorWidget::Construct(const FArguments& InArgs, TSharedRef<FUHLevelEditorEdModeToolkit> InParentToolkit)
 {
 	ParentToolkit = InParentToolkit;
-
-	TSharedRef<FUICommandList> CommandList = InParentToolkit->GetToolkitCommands();
-	FToolBarBuilder ModeSwitchButtons(CommandList, FMultiBoxCustomization::None);
-	{
-		ModeSwitchButtons.AddToolBarButton(FUHLevelEditorUICommands::Get().ManageMode, NAME_None, LOCTEXT("Mode.Manage", "Manage"), LOCTEXT("Mode.Manage.Tooltip", "Contains tools to add a new landscape, import/export landscape, add/remove components and manage streaming"));
-		ModeSwitchButtons.AddToolBarButton(FUHLevelEditorUICommands::Get().SculptMode, NAME_None, LOCTEXT("Mode.Sculpt", "Sculpt"), LOCTEXT("Mode.Sculpt.Tooltip", "Contains tools that modify the shape of a landscape"));
-		ModeSwitchButtons.AddToolBarButton(FUHLevelEditorUICommands::Get().PaintMode, NAME_None, LOCTEXT("Mode.Paint", "Paint"), LOCTEXT("Mode.Paint.Tooltip", "Contains tools that paint materials on to a landscape"));
-	}
 
 	FUHLevelEditorEdMode* EdMode = GetEditorMode();
 	if (EdMode)
@@ -85,6 +192,7 @@ void SUHLevelEditorWidget::Construct(const FArguments& InArgs, TSharedRef<FUHLev
 			.Padding(0)
 			[
 				SNew(SVerticalBox)
+				.IsEnabled(this, &SUHLevelEditorWidget::GetLevelEditorIsEnabled)
 				+ SVerticalBox::Slot()
 				.Padding(0)
 				[
@@ -104,6 +212,73 @@ class FUHLevelEditorEdMode* SUHLevelEditorWidget::GetEditorMode() const
 bool SUHLevelEditorWidget::GetIsPropertyVisible(const FPropertyAndParent& PropertyAndParent) const
 {
 	return true;
+}
+
+bool SUHLevelEditorWidget::GetLevelEditorIsEnabled() const
+{
+	const FUHLevelEditorEdMode* EdMode = GetEditorMode();
+	if (EdMode)
+	{
+		Error->SetError(GetErrorText());
+		return true;
+	}
+	return false;
+}
+
+FText SUHLevelEditorWidget::GetErrorText() const
+{
+	const FUHLevelEditorEdMode* EdMode = GetEditorMode();
+	if (EdMode)
+	{
+		EUHLevelEditorEditingState EditingState = EUHLevelEditorEditingState::Enabled;
+		switch (EditingState)
+		{
+			case EUHLevelEditorEditingState::SIEWorld:
+			{
+				if (EdMode->UISettings->NewLandscapeMethod != EUHLevelEditorNewLandscapeMethod::None)
+				{
+					return LOCTEXT("IsSimulatingError_create", "Can't create landscape while simulating!");
+				}
+				else
+				{
+					return LOCTEXT("IsSimulatingError_edit", "Can't edit landscape while simulating!");
+				}
+			}
+			case EUHLevelEditorEditingState::PIEWorld:
+			{
+				if (EdMode->UISettings->NewLandscapeMethod != EUHLevelEditorNewLandscapeMethod::None)
+				{
+					return LOCTEXT("IsPIEError_create", "Can't create landscape in PIE!");
+				}
+				else
+				{
+					return LOCTEXT("IsPIEError_edit", "Can't edit landscape in PIE!");
+				}
+			}
+			case EUHLevelEditorEditingState::BadFeatureLevel:
+			{
+				if (EdMode->UISettings->NewLandscapeMethod != EUHLevelEditorNewLandscapeMethod::None)
+				{
+					return LOCTEXT("IsFLError_create", "Can't create landscape with a feature level less than SM4!");
+				}
+				else
+				{
+					return LOCTEXT("IsFLError_edit", "Can't edit landscape with a feature level less than SM4!");
+				}
+			}
+			case EUHLevelEditorEditingState::NoLandscape:
+			{
+				return LOCTEXT("NoLandscapeError", "No Landscape!");
+			}
+			case EUHLevelEditorEditingState::Enabled:
+			{
+				return FText::GetEmpty();
+			}
+			default:
+				checkNoEntry();
+		}
+	}
+	return FText::GetEmpty();
 }
 
 #undef LOCTEXT_NAMESPACE
