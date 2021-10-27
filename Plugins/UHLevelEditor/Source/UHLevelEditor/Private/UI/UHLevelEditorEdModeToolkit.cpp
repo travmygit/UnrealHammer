@@ -29,7 +29,41 @@ FUHLevelEditorEdModeToolkit::FUHLevelEditorEdModeToolkit()
 
 void FUHLevelEditorEdModeToolkit::Init(const TSharedPtr<IToolkitHost>& InitToolkitHost)
 {
-	LandscapeEditorWidgets = SNew(SUHLevelEditorWidget, SharedThis(this));
+	const FUHLevelEditorEdMode* EdMode = (FUHLevelEditorEdMode*)GetEditorMode();
+	if (EdMode)
+	{
+		auto UICommands = FUHLevelEditorUICommands::Get();
+		const auto& NameToCommandMap = UICommands.NameToCommandMap;
+		TSharedRef<FUICommandList> UICommandList = GetToolkitCommands();
+
+#define MAP_TOOLMODE(InName) UICommandList->MapAction(NameToCommandMap.FindChecked(InName), FUIAction(FExecuteAction::CreateSP(this, &FUHLevelEditorEdModeToolkit::OnToolModeChanged, FName(InName)), FCanExecuteAction::CreateSP(this, &FUHLevelEditorEdModeToolkit::IsToolModeEnabled, FName(InName)), FIsActionChecked::CreateSP(this, &FUHLevelEditorEdModeToolkit::IsToolModeActive, FName(InName))));
+		MAP_TOOLMODE("ToolMode_Manage");
+		MAP_TOOLMODE("ToolMode_Sculpt");
+		MAP_TOOLMODE("ToolMode_Paint");
+#undef  MAP_TOOLMODE
+		
+#define MAP_TOOL(InName) UICommandList->MapAction(NameToCommandMap.FindChecked(InName), FUIAction(FExecuteAction::CreateSP(this, &FUHLevelEditorEdModeToolkit::OnToolChanged, FName(InName)), FCanExecuteAction::CreateSP(this, &FUHLevelEditorEdModeToolkit::IsToolEnabled, FName(InName)), FIsActionChecked::CreateSP(this, &FUHLevelEditorEdModeToolkit::IsToolActive, FName(InName))));
+		MAP_TOOL("Tool_NewLandscape");
+		MAP_TOOL("Tool_ResizeLandscape");
+		MAP_TOOL("Tool_SelectComponent");
+		MAP_TOOL("Tool_AddComponent");
+		MAP_TOOL("Tool_DeleteComponent");
+		MAP_TOOL("Tool_MoveComponent");
+
+		MAP_TOOL("Tool_Sculpt");
+		MAP_TOOL("Tool_Ramp");
+
+		MAP_TOOL("Tool_Paint");
+#undef  MAP_TOOL
+
+#define MAP_BRUSH_SET(InName) UICommandList->MapAction(NameToCommandMap.FindChecked(InName), FUIAction(FExecuteAction::CreateSP(this, &FUHLevelEditorEdModeToolkit::OnBrushSetChanged, FName(InName)), FCanExecuteAction::CreateSP(this, &FUHLevelEditorEdModeToolkit::IsBrushSetEnabled, FName(InName)), FIsActionChecked::CreateSP(this, &FUHLevelEditorEdModeToolkit::IsBrushSetActive, FName(InName))));
+#undef  MAP_BRUSH_SET
+
+#define MAP_BRUSH(InName) UICommandList->MapAction(NameToCommandMap.FindChecked(InName), FUIAction(FExecuteAction::CreateSP(this, &FUHLevelEditorEdModeToolkit::OnBrushChanged, FName(InName)), FCanExecuteAction::CreateSP(this, &FUHLevelEditorEdModeToolkit::IsBrushEnabled, FName(InName)), FIsActionChecked::CreateSP(this, &FUHLevelEditorEdModeToolkit::IsBrushActive, FName(InName))));
+#undef  MAP_BRUSH
+
+		LandscapeEditorWidgets = SNew(SUHLevelEditorWidget, SharedThis(this));
+	}
 
 	FModeToolkit::Init(InitToolkitHost);
 }
@@ -128,22 +162,22 @@ void FUHLevelEditorEdModeToolkit::OnToolPaletteChanged(FName PaletteName)
 	}
 }
 
-void FUHLevelEditorEdModeToolkit::OnToolModeChanged(FName ModeName)
+void FUHLevelEditorEdModeToolkit::OnToolModeChanged(FName ToolModeName)
 {
 	FUHLevelEditorEdMode* EdMode = (FUHLevelEditorEdMode*)GetEditorMode();
 	if (EdMode)
 	{
-		//EdMode->SetCurrentToolMode(ModeName);
+		//EdMode->SetCurrentToolMode(ToolModeName);
 	}
 }
 
-bool FUHLevelEditorEdModeToolkit::IsToolModeEnabled(FName ModeName) const
+bool FUHLevelEditorEdModeToolkit::IsToolModeEnabled(FName ToolModeName) const
 {
 	const FUHLevelEditorEdMode* EdMode = (FUHLevelEditorEdMode*)GetEditorMode();
 	if (EdMode)
 	{
 		// Manage is the only mode enabled if we have no landscape
-		if (ModeName == UHLevelEditorEdModeToolkit::Manage)
+		if (ToolModeName == UHLevelEditorEdModeToolkit::Manage /*|| ((EdMode->GetLandscapeList().Num() > 0) && EdMode->CanEditCurrentTarget())*/)
 		{
 			return true;
 		}
@@ -151,12 +185,107 @@ bool FUHLevelEditorEdModeToolkit::IsToolModeEnabled(FName ModeName) const
 	return false;
 }
 
-bool FUHLevelEditorEdModeToolkit::IsToolModeActive(FName ModeName) const
+bool FUHLevelEditorEdModeToolkit::IsToolModeActive(FName ToolModeName) const
 {
 	const FUHLevelEditorEdMode* EdMode = (FUHLevelEditorEdMode*)GetEditorMode();
 	if (EdMode)
 	{
-		//return EdMode->CurrentToolMode->ToolModeName == ModeName;
+		//return EdMode->CurrentToolMode->ToolModeName == ToolModeName;
+		return true;
+	}
+	return false;
+}
+
+void FUHLevelEditorEdModeToolkit::OnToolChanged(FName ToolName)
+{
+	FUHLevelEditorEdMode* EdMode = (FUHLevelEditorEdMode*)GetEditorMode();
+	if (EdMode)
+	{
+		//EdMode->SetCurrentTool(ToolName);
+	}
+}
+
+bool FUHLevelEditorEdModeToolkit::IsToolEnabled(FName ToolName) const
+{
+	const FUHLevelEditorEdMode* EdMode = (FUHLevelEditorEdMode*)GetEditorMode();
+	if (EdMode)
+	{
+		if (ToolName == "Tool_NewLandscape" /*|| (EdMode->GetLandscapeList().Num() > 0)*/)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool FUHLevelEditorEdModeToolkit::IsToolActive(FName ToolName) const
+{
+	const FUHLevelEditorEdMode* EdMode = (FUHLevelEditorEdMode*)GetEditorMode();
+	if (EdMode)
+	{
+		//return EdMode->CurrentTool->ToolName == ToolName;
+		return true;
+	}
+	return false;
+}
+
+void FUHLevelEditorEdModeToolkit::OnBrushSetChanged(FName BrushSetName)
+{
+	FUHLevelEditorEdMode* EdMode = (FUHLevelEditorEdMode*)GetEditorMode();
+	if (EdMode)
+	{
+		//EdMode->SetCurrentBrushSet(BrushSetName);
+	}
+}
+
+bool FUHLevelEditorEdModeToolkit::IsBrushSetEnabled(FName BrushSetName) const
+{
+	const FUHLevelEditorEdMode* EdMode = (FUHLevelEditorEdMode*)GetEditorMode();
+	if (EdMode)
+	{
+		//return EdMode->CurrentTool->ValidBrushes.Contains(BrushSetName);
+		return true;
+	}
+	return false;
+}
+
+bool FUHLevelEditorEdModeToolkit::IsBrushSetActive(FName BrushSetName) const
+{
+	const FUHLevelEditorEdMode* EdMode = (FUHLevelEditorEdMode*)GetEditorMode();
+	if (EdMode)
+	{
+		//return EdMode->CurrentTool->BrushSetName == BrushSetName;
+		return true;
+	}
+	return false;
+}
+
+void FUHLevelEditorEdModeToolkit::OnBrushChanged(FName BrushName)
+{
+	FUHLevelEditorEdMode* EdMode = (FUHLevelEditorEdMode*)GetEditorMode();
+	if (EdMode)
+	{
+		//EdMode->SetCurrentBrush(BrushName);
+	}
+}
+
+bool FUHLevelEditorEdModeToolkit::IsBrushEnabled(FName BrushName) const
+{
+	const FUHLevelEditorEdMode* EdMode = (FUHLevelEditorEdMode*)GetEditorMode();
+	if (EdMode)
+	{
+		//return EdMode->CurrentTool->ValidBrushes.Contains(BrushName);
+		return true;
+	}
+	return false;
+}
+
+bool FUHLevelEditorEdModeToolkit::IsBrushActive(FName BrushName) const
+{
+	const FUHLevelEditorEdMode* EdMode = (FUHLevelEditorEdMode*)GetEditorMode();
+	if (EdMode)
+	{
+		//return EdMode->CurrentTool->BrushName == BrushName;
 		return true;
 	}
 	return false;

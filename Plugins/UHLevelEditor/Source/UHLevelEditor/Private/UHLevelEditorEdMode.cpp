@@ -153,3 +153,9 @@ void FUHLevelEditorEdMode::AddReferencedObjects(FReferenceCollector& Collector)
 
 	Collector.AddReferencedObject(UISettings);
 }
+
+TSharedRef<FUICommandList> FUHLevelEditorEdMode::GetToolkitCommands() const
+{
+	checkSlow(Toolkit.IsValid());
+	return Toolkit->GetToolkitCommands();
+}

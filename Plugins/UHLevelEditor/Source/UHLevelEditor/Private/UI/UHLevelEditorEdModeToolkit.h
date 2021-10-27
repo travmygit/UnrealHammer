@@ -43,9 +43,21 @@ public:
 	//////////////////////////////////////////////////////////////////////////
 
 protected:
-	void OnToolModeChanged(FName ModeName);
-	bool IsToolModeEnabled(FName ModeName) const;
-	bool IsToolModeActive(FName ModeName) const;
+	void OnToolModeChanged(FName ToolModeName);
+	bool IsToolModeEnabled(FName ToolModeName) const;
+	bool IsToolModeActive(FName ToolModeName) const;
+
+	void OnToolChanged(FName ToolName);
+	bool IsToolEnabled(FName ToolName) const;
+	bool IsToolActive(FName ToolName) const;
+
+	void OnBrushSetChanged(FName BrushSetName);
+	bool IsBrushSetEnabled(FName BrushSetName) const;
+	bool IsBrushSetActive(FName BrushSetName) const;
+	
+	void OnBrushChanged(FName BrushName);
+	bool IsBrushEnabled(FName BrushName) const;
+	bool IsBrushActive(FName BrushName) const;
 
 private:
 	TSharedPtr<SUHLevelEditorWidget> LandscapeEditorWidgets;
