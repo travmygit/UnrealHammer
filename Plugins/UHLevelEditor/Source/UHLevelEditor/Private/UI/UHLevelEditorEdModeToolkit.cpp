@@ -232,7 +232,7 @@ void FUHLevelEditorEdModeToolkit::OnBrushSetChanged(FName BrushSetName)
 	FUHLevelEditorEdMode* EdMode = (FUHLevelEditorEdMode*)GetEditorMode();
 	if (EdMode)
 	{
-		//EdMode->SetCurrentBrushSet(BrushSetName);
+		EdMode->SetCurrentBrushSet(BrushSetName);
 	}
 }
 
@@ -252,8 +252,7 @@ bool FUHLevelEditorEdModeToolkit::IsBrushSetActive(FName BrushSetName) const
 	const FUHLevelEditorEdMode* EdMode = (FUHLevelEditorEdMode*)GetEditorMode();
 	if (EdMode)
 	{
-		//return EdMode->CurrentTool->BrushSetName == BrushSetName;
-		return true;
+		return EdMode->GetCurrentBrushSetName() == BrushSetName;
 	}
 	return false;
 }
@@ -263,7 +262,7 @@ void FUHLevelEditorEdModeToolkit::OnBrushChanged(FName BrushName)
 	FUHLevelEditorEdMode* EdMode = (FUHLevelEditorEdMode*)GetEditorMode();
 	if (EdMode)
 	{
-		//EdMode->SetCurrentBrush(BrushName);
+		EdMode->SetCurrentBrush(BrushName);
 	}
 }
 
@@ -283,8 +282,7 @@ bool FUHLevelEditorEdModeToolkit::IsBrushActive(FName BrushName) const
 	const FUHLevelEditorEdMode* EdMode = (FUHLevelEditorEdMode*)GetEditorMode();
 	if (EdMode)
 	{
-		//return EdMode->CurrentTool->BrushName == BrushName;
-		return true;
+		return EdMode->GetCurrentBrushName() == BrushName;
 	}
 	return false;
 }

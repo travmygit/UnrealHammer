@@ -43,9 +43,11 @@ public:
 	TSharedRef<FUICommandList> GetToolkitCommands() const;
 	void SetCurrentToolMode(FName InToolModeName);
 	void SetCurrentTool(FName InToolName);
+	void SetCurrentBrushSet(FName InBrushSetName);
 	void SetCurrentBrush(FName InBrushName);
 	FName GetCurrentToolModeName() const;
 	FName GetCurrentToolName() const;
+	FName GetCurrentBrushSetName() const;
 	FName GetCurrentBrushName() const;
 	//~ End Toolkits interface
 	//////////////////////////////////////////////////////////////////////////
@@ -54,6 +56,9 @@ private:
 	
 	FName CurrentToolMode;
 	FName CurrentTool;
+	FName CurrentBrushSet;
 	FName CurrentBrush;
 
+	int32 CurrentBrushSetIndex;
+	int32 CurrentBrushIndex;
 };

@@ -14,9 +14,16 @@ const FEditorModeID FUHLevelEditorEdMode::EditorModeID = TEXT("UHLevelEditorEdMo
 
 FUHLevelEditorEdMode::FUHLevelEditorEdMode()
 	: UISettings(nullptr)
+	, CurrentToolMode(NAME_None)
+	, CurrentTool(NAME_None)
+	, CurrentBrushSet(NAME_None)
+	, CurrentBrush(NAME_None)
+	, CurrentBrushSetIndex(INDEX_NONE)
+	, CurrentBrushIndex(INDEX_NONE)
 {
 	UISettings = NewObject<UUHLevelEditorUISettings>(GetTransientPackage(), NAME_None, RF_Transactional);
 	UISettings->Init(this);
+
 }
 
 FUHLevelEditorEdMode::~FUHLevelEditorEdMode()
@@ -176,6 +183,14 @@ void FUHLevelEditorEdMode::SetCurrentTool(FName InToolName)
 	}
 }
 
+void FUHLevelEditorEdMode::SetCurrentBrushSet(FName InBrushSetName)
+{
+	if (CurrentBrushSet != InBrushSetName)
+	{
+		CurrentBrushSet = InBrushSetName;
+	}
+}
+
 void FUHLevelEditorEdMode::SetCurrentBrush(FName InBrushName)
 {
 	if (CurrentBrush != InBrushName)
@@ -192,6 +207,11 @@ FName FUHLevelEditorEdMode::GetCurrentToolModeName() const
 FName FUHLevelEditorEdMode::GetCurrentToolName() const
 {
 	return CurrentTool;
+}
+
+FName FUHLevelEditorEdMode::GetCurrentBrushSetName() const
+{
+	return CurrentBrushSet;
 }
 
 FName FUHLevelEditorEdMode::GetCurrentBrushName() const
