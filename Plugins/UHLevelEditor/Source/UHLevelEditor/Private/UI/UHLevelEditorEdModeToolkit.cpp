@@ -167,7 +167,7 @@ void FUHLevelEditorEdModeToolkit::OnToolModeChanged(FName ToolModeName)
 	FUHLevelEditorEdMode* EdMode = (FUHLevelEditorEdMode*)GetEditorMode();
 	if (EdMode)
 	{
-		//EdMode->SetCurrentToolMode(ToolModeName);
+		EdMode->SetCurrentToolMode(ToolModeName);
 	}
 }
 
@@ -190,8 +190,7 @@ bool FUHLevelEditorEdModeToolkit::IsToolModeActive(FName ToolModeName) const
 	const FUHLevelEditorEdMode* EdMode = (FUHLevelEditorEdMode*)GetEditorMode();
 	if (EdMode)
 	{
-		//return EdMode->CurrentToolMode->ToolModeName == ToolModeName;
-		return true;
+		return EdMode->GetCurrentToolModeName() == ToolModeName;
 	}
 	return false;
 }
@@ -201,7 +200,7 @@ void FUHLevelEditorEdModeToolkit::OnToolChanged(FName ToolName)
 	FUHLevelEditorEdMode* EdMode = (FUHLevelEditorEdMode*)GetEditorMode();
 	if (EdMode)
 	{
-		//EdMode->SetCurrentTool(ToolName);
+		EdMode->SetCurrentTool(ToolName);
 	}
 }
 
@@ -223,8 +222,7 @@ bool FUHLevelEditorEdModeToolkit::IsToolActive(FName ToolName) const
 	const FUHLevelEditorEdMode* EdMode = (FUHLevelEditorEdMode*)GetEditorMode();
 	if (EdMode)
 	{
-		//return EdMode->CurrentTool->ToolName == ToolName;
-		return true;
+		return EdMode->GetCurrentToolName() == ToolName;
 	}
 	return false;
 }

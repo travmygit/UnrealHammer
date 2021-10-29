@@ -159,3 +159,42 @@ TSharedRef<FUICommandList> FUHLevelEditorEdMode::GetToolkitCommands() const
 	checkSlow(Toolkit.IsValid());
 	return Toolkit->GetToolkitCommands();
 }
+
+void FUHLevelEditorEdMode::SetCurrentToolMode(FName InToolModeName)
+{
+	if (CurrentToolMode != InToolModeName)
+	{
+		CurrentToolMode = InToolModeName;
+	}
+}
+
+void FUHLevelEditorEdMode::SetCurrentTool(FName InToolName)
+{
+	if (CurrentTool != InToolName)
+	{
+		CurrentTool = InToolName;
+	}
+}
+
+void FUHLevelEditorEdMode::SetCurrentBrush(FName InBrushName)
+{
+	if (CurrentBrush != InBrushName)
+	{
+		CurrentBrush = InBrushName;
+	}
+}
+
+FName FUHLevelEditorEdMode::GetCurrentToolModeName() const
+{
+	return CurrentToolMode;
+}
+
+FName FUHLevelEditorEdMode::GetCurrentToolName() const
+{
+	return CurrentTool;
+}
+
+FName FUHLevelEditorEdMode::GetCurrentBrushName() const
+{
+	return CurrentBrush;
+}
