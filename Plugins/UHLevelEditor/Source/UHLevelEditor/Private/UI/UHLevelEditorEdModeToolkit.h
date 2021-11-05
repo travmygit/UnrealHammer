@@ -61,6 +61,7 @@ protected:
 
 private:
 	TSharedPtr<SUHLevelEditorWidget> LandscapeEditorWidgets;
+	TSharedPtr<class FUHLevelEditorDetails> BrushWidgets;
 
 	static const TArray<FName> PaletteNames;
 };

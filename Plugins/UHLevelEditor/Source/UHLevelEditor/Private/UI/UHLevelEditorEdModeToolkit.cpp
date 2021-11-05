@@ -4,6 +4,7 @@
 #include "UHLevelEditorEdMode.h"
 #include "UI/UHLevelEditorUISettings.h"
 #include "UI/UHLevelEditorUICommands.h"
+#include "UI/UHLevelEditorDetails.h"
 
 #include "Engine/Selection.h"
 #include "SlateOptMacros.h"
@@ -63,6 +64,7 @@ void FUHLevelEditorEdModeToolkit::Init(const TSharedPtr<IToolkitHost>& InitToolk
 #undef  MAP_BRUSH
 
 		LandscapeEditorWidgets = SNew(SUHLevelEditorWidget, SharedThis(this));
+		BrushWidgets = StaticCastSharedRef<FUHLevelEditorDetails>(FUHLevelEditorDetails::MakeInstance());
 	}
 
 	FModeToolkit::Init(InitToolkitHost);
@@ -135,12 +137,16 @@ void FUHLevelEditorEdModeToolkit::BuildToolPalette(FName PaletteName, class FToo
 			ToolbarBuilder.BeginSection(UHLevelEditorEdModeToolkit::Sculpt);
 			ToolbarBuilder.AddToolBarButton(UICommands.SculptTool);
 			ToolbarBuilder.AddToolBarButton(UICommands.RampTool);
+			ToolbarBuilder.AddSeparator();
+			BrushWidgets->CustomizeToolPalette(ToolbarBuilder, SharedThis(this));
 			ToolbarBuilder.EndSection();
 		}
 		else if (PaletteName == UHLevelEditorEdModeToolkit::Paint)
 		{
 			ToolbarBuilder.BeginSection(UHLevelEditorEdModeToolkit::Paint);
 			ToolbarBuilder.AddToolBarButton(UICommands.PaintTool);
+			ToolbarBuilder.AddSeparator();
+			BrushWidgets->CustomizeToolPalette(ToolbarBuilder, SharedThis(this));
 			ToolbarBuilder.EndSection();
 		}
 	}

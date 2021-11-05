@@ -28,6 +28,8 @@ public:
 	//~ End IDetailCustomization interface
 	//////////////////////////////////////////////////////////////////////////
 
+	void CustomizeToolPalette(class FToolBarBuilder& ToolbarBuilder, const TSharedRef<class FUHLevelEditorEdModeToolkit> Toolkit);
+
 public:
 	static TSharedRef<IDetailCustomization> MakeInstance();
 

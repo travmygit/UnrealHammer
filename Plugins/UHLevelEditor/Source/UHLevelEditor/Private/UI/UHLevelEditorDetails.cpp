@@ -2,6 +2,7 @@
 
 #include "UI/UHLevelEditorDetails.h"
 #include "UHLevelEditorEdMode.h"
+#include "UI/UHLevelEditorEdModeToolkit.h"
 #include "UI/UHLevelEditorDetailCustomization_NewLandscape.h"
 
 #include "EditorModeManager.h"
@@ -30,6 +31,12 @@ void FUHLevelEditorDetails::CustomizeDetails(IDetailLayoutBuilder& DetailBuilder
 	Customization_NewLandscape = MakeShareable(new FUHLevelEditorDetailCustomization_NewLandscape);
 	Customization_NewLandscape->CustomizeDetails(DetailBuilder);
 }
+
+void FUHLevelEditorDetails::CustomizeToolPalette(class FToolBarBuilder& ToolbarBuilder, const TSharedRef<class FUHLevelEditorEdModeToolkit> Toolkit)
+{
+	
+}
+
 END_SLATE_FUNCTION_BUILD_OPTIMIZATION
 
 TSharedRef<IDetailCustomization> FUHLevelEditorDetails::MakeInstance()
