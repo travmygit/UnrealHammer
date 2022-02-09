@@ -2,8 +2,8 @@
 	"FileVersion": 3,
 	"Version": 1,
 	"VersionName": "1.0",
-	"FriendlyName": "UHLevelEditor",
-	"Description": "travmygit",
+	"FriendlyName": "HammerNav",
+	"Description": "Hammer's navigation module.",
 	"Category": "UnrealHammer",
 	"CreatedBy": "trav",
 	"CreatedByURL": "https://github.com/travmygit/UnrealHammer",
@@ -16,8 +16,8 @@
 	"Installed": false,
 	"Modules": [
 		{
-			"Name": "UHLevelEditor",
-			"Type": "Editor",
+			"Name": "HammerNav",
+			"Type": "Runtime",
 			"LoadingPhase": "Default"
 		}
 	]
