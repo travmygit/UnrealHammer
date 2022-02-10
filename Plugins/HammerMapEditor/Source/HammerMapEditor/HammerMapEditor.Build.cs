@@ -41,6 +41,8 @@ public class HammerMapEditor : ModuleRules
 				"InputCore",
 				"UnrealEd",
 				"LevelEditor",
+				"UMG",
+				"Blutility",
 				// ... add private dependencies that you statically link with here ...	
 			}
 			);
