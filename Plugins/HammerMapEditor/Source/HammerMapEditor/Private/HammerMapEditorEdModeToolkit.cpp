@@ -2,9 +2,10 @@
 
 #include "HammerMapEditorEdModeToolkit.h"
 #include "HammerMapEditorEdMode.h"
-#include "Engine/Selection.h"
-#include "Widgets/Input/SButton.h"
-#include "Widgets/Text/STextBlock.h"
+#include "HammerMapEditorSettings.h"
+#include "Panel/HammerMapEditorMainPanel.h"
+
+#include "WidgetBlueprint.h"
 #include "EditorModeManager.h"
 
 #define LOCTEXT_NAMESPACE "FHammerMapEditorEdModeToolkit"
@@ -15,94 +16,34 @@ FHammerMapEditorEdModeToolkit::FHammerMapEditorEdModeToolkit()
 
 void FHammerMapEditorEdModeToolkit::Init(const TSharedPtr<IToolkitHost>& InitToolkitHost)
 {
-	struct Locals
+	auto HammerMapEditorSettings = GetDefault<UHammerMapEditorSettings>();
+	auto MainPanelRef = HammerMapEditorSettings->MainPanel;
+	if (MainPanelRef.IsValid())
 	{
-		static bool IsWidgetEnabled()
+		UWidgetBlueprint* MainPanel = Cast<UWidgetBlueprint>(MainPanelRef.TryLoad());
+		if (MainPanel)
 		{
-			return GEditor->GetSelectedActors()->Num() != 0;
-		}
-
-		static FReply OnButtonClick(FVector InOffset)
-		{
-			USelection* SelectedActors = GEditor->GetSelectedActors();
-
-			// Let editor know that we're about to do something that we want to undo/redo
-			GEditor->BeginTransaction(LOCTEXT("MoveActorsTransactionName", "MoveActors"));
-
-			// For each selected actor
-			for (FSelectionIterator Iter(*SelectedActors); Iter; ++Iter)
+			UHammerMapEditorMainPanel* CreatedUMGWidget = nullptr;
+			UClass* BlueprintClass = MainPanel->GeneratedClass;
+			TSubclassOf<UHammerMapEditorMainPanel> MainPanelClass = BlueprintClass;
+			auto World = GEditor->GetEditorWorldContext().World();
+			if (World && MainPanelClass)
 			{
-				if (AActor* LevelActor = Cast<AActor>(*Iter))
-				{
-					// Register actor in opened transaction (undo/redo)
-					LevelActor->Modify();
-					// Move actor to given location
-					LevelActor->TeleportTo(LevelActor->GetActorLocation() + InOffset, FRotator(0, 0, 0));
-				}
+				CreatedUMGWidget = CreateWidget<UHammerMapEditorMainPanel>(World, MainPanelClass);
 			}
 
-			// We're done moving actors so close transaction
-			GEditor->EndTransaction();
-
-			return FReply::Handled();
-		}
-
-		static TSharedRef<SWidget> MakeButton(FText InLabel, const FVector InOffset)
-		{
-			return SNew(SButton)
-				.Text(InLabel)
-				.OnClicked_Static(&Locals::OnButtonClick, InOffset);
-		}
-	};
-
-	const float Factor = 256.0f;
-
-	SAssignNew(ToolkitWidget, SBorder)
-		.HAlign(HAlign_Center)
-		.Padding(25)
-		.IsEnabled_Static(&Locals::IsWidgetEnabled)
-		[
-			SNew(SVerticalBox)
-			+ SVerticalBox::Slot()
-			.AutoHeight()
-			.HAlign(HAlign_Center)
-			.Padding(50)
-			[
-				SNew(STextBlock)
-				.AutoWrapText(true)
-				.Text(LOCTEXT("HelperLabel", "Select some actors and move them around using buttons below"))
-			]
-			+ SVerticalBox::Slot()
-				.HAlign(HAlign_Center)
-				.AutoHeight()
-				[
-					Locals::MakeButton(LOCTEXT("UpButtonLabel", "Up"), FVector(0, 0, Factor))
-				]
-			+ SVerticalBox::Slot()
-				.HAlign(HAlign_Center)
-				.AutoHeight()
-				[
-					SNew(SHorizontalBox)
-					+ SHorizontalBox::Slot()
-					.AutoWidth()
+			if (CreatedUMGWidget)
+			{
+				SAssignNew(ToolkitWidget, SVerticalBox)
+					+ SVerticalBox::Slot()
+					.HAlign(HAlign_Fill)
 					[
-						Locals::MakeButton(LOCTEXT("LeftButtonLabel", "Left"), FVector(0, -Factor, 0))
-					]
-					+ SHorizontalBox::Slot()
-						.AutoWidth()
-						[
-							Locals::MakeButton(LOCTEXT("RightButtonLabel", "Right"), FVector(0, Factor, 0))
-						]
-				]
-			+ SVerticalBox::Slot()
-				.HAlign(HAlign_Center)
-				.AutoHeight()
-				[
-					Locals::MakeButton(LOCTEXT("DownButtonLabel", "Down"), FVector(0, 0, -Factor))
-				]
+						CreatedUMGWidget->TakeWidget()
+					];
+			}
+		}
+	}
 
-		];
-		
 	FModeToolkit::Init(InitToolkitHost);
 }
 

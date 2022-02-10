@@ -42,6 +42,7 @@ public class HammerMapEditor : ModuleRules
 				"UnrealEd",
 				"LevelEditor",
 				"UMG",
+				"UMGEditor",
 				"Blutility",
 				// ... add private dependencies that you statically link with here ...	
 			}
