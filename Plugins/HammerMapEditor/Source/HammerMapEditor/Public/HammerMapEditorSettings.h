@@ -5,13 +5,13 @@
 #include "HammerMapEditorSettings.generated.h"
 
 UCLASS(MinimalAPI, config = HammerMapEditor, defaultconfig)
-class UHammerMapEditorSettings : public UDeveloperSettings
+class UHammerMapEditorSettings : public UObject
 {
 	GENERATED_BODY()
 
 public:
 
-	UPROPERTY(config, EditAnywhere, Category = Panel)
+	UPROPERTY(config, EditAnywhere, Category = Panel, AdvancedDisplay)
 	FSoftObjectPath MainPanel;
 
 };

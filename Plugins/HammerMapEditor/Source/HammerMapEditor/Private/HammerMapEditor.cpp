@@ -3,6 +3,7 @@
 #include "HammerMapEditor.h"
 #include "HammerMapEditorEdMode.h"
 #include "HammerMapEditorSettings.h"
+#include "HammerMapEditorUISettings.h"
 
 #include "ISettingsModule.h"
 #include "ISettingsSection.h"
@@ -34,10 +35,16 @@ void FHammerMapEditorModule::RegisterSettings()
 
 	if (SettingsModule != nullptr)
 	{
-		ISettingsSectionPtr SettingsSection = SettingsModule->RegisterSettings("Editor", "Plugins", "HammerMapEditor",
+		SettingsModule->RegisterSettings("Editor", "Plugins", "HammerMapEditor",
 			LOCTEXT("HammerMapEditorSettingsName", "HammerMapEditor"),
 			LOCTEXT("HammerMapEditorSettingsDescription", "Configure HammerMapEditor plug-in."),
 			GetMutableDefault<UHammerMapEditorSettings>()
+		);
+
+		SettingsModule->RegisterSettings("Editor", "Plugins", "HammerMapEditorUISettings",
+			LOCTEXT("HammerMapEditorUISettingsName", "HammerMapEditorUISettings"),
+			LOCTEXT("HammerMapEditorUISettingsDescription", "Configure HammerMapEditor UI settings."),
+			GetMutableDefault<UHammerMapEditorUISettings>()
 		);
 	}
 }
@@ -49,6 +56,7 @@ void FHammerMapEditorModule::UnregisterSettings()
 	if (SettingsModule != nullptr)
 	{
 		SettingsModule->UnregisterSettings("Editor", "Plugins", "HammerMapEditor");
+		SettingsModule->UnregisterSettings("Editor", "Plugins", "HammerMapEditorUISettings");
 	}
 }
 
