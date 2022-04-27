@@ -4,6 +4,8 @@
 #include "EditorUtilityWidget.h"
 #include "HammerMapEditorPanelBase.generated.h"
 
+class UHammerMapEditorUISettings;
+
 UCLASS(MinimalAPI)
 class UHammerMapEditorPanelBase : public UEditorUtilityWidget
 {
@@ -17,6 +19,8 @@ public:
 	virtual void BeginDestroy() override;
 
 protected:
-	
 
+	/// Returns the UI profile object.
+	UFUNCTION(BlueprintPure)
+	UHammerMapEditorUISettings* GetUISettings() const;
 };

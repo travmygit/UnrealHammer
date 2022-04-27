@@ -1,5 +1,8 @@
 #include "Panel/HammerMapEditorMainPanel.h"
 
+#include "HammerMapActor.h"
+#include "HammerMapEditorUISettings.h"
+
 UHammerMapEditorMainPanel::UHammerMapEditorMainPanel(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {

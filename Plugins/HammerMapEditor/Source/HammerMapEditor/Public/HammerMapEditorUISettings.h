@@ -11,6 +11,19 @@ class UHammerMapEditorUISettings : public UObject
 
 public:
 
-	UPROPERTY(config, EditAnywhere, BlueprintReadWrite, Category = NewLandscape)
-	FTransform NewLandscapeTransfrom;
+	UHammerMapEditorUISettings()
+	: MapSize(64)
+	, BrushType()
+	, BrushSize()
+	{
+	}
+	
+	UPROPERTY(config, EditAnywhere, BlueprintReadWrite, Category = ManageTool)
+	FIntPoint MapSize;
+
+	UPROPERTY(Config, EditAnywhere, BlueprintReadWrite, Category = TileEditor)
+	int32 BrushType;
+	
+	UPROPERTY(Config, EditAnywhere, BlueprintReadWrite, Category = TileEditor)
+	int32 BrushSize;
 };

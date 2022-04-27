@@ -44,6 +44,7 @@ public class HammerMapEditor : ModuleRules
 				"UMG",
 				"UMGEditor",
 				"Blutility",
+				"HammerMap",
 				// ... add private dependencies that you statically link with here ...	
 			}
 			);
