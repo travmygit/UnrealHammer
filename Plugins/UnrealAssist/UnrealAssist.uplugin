@@ -1,0 +1,24 @@
+{
+	"FileVersion": 3,
+	"Version": 1,
+	"VersionName": "1.0",
+	"FriendlyName": "UnrealAssist",
+	"Description": "Unreal Assist is a collection of all open source toolkits.",
+	"Category": "UnrealHammer",
+	"CreatedBy": "trav",
+	"CreatedByURL": "https://github.com/travmygit/UnrealHammer",
+	"DocsURL": "",
+	"MarketplaceURL": "",
+	"SupportURL": "",
+	"CanContainContent": true,
+	"IsBetaVersion": true,
+	"IsExperimentalVersion": false,
+	"Installed": false,
+	"Modules": [
+		{
+			"Name": "UnrealAssist",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
+		}
+	]
+}
